@@ -48,6 +48,7 @@ namespace TodoApp.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetTodoById([FromRoute] Guid id)
         {
@@ -64,7 +65,26 @@ namespace TodoApp.Api.Controllers
 
         }
 
+        [HttpPut]
+        [Authorize]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> UpdateTodo([FromRoute] Guid id, [FromBody] UpdateTodoDto updateTodoDto)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+            var userId = tokenRepository.GetUserId(token);
+            var userGuid = new Guid(userId);
+            var todoDomain = mapper.Map<Todo>(updateTodoDto);
+            todoDomain = await todoRepository.UpdateTodo(id, userGuid, todoDomain);
+            if (todoDomain == null)
+            {
+                return NotFound();
+            }
+            var todoDto = mapper.Map<TodoDto>(todoDomain);
+            return Ok(todoDto);
+        }
+
         [HttpDelete]
+        [Authorize]
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteTodo([FromRoute] Guid id)
         {

@@ -9,6 +9,7 @@ namespace TodoApp.Api.Mapping
         public AutoMapperProfiles()
         {
             CreateMap<AddTodoDTO, Todo>().ReverseMap();
+            CreateMap<UpdateTodoDto, Todo>().ReverseMap();
             CreateMap<Todo, TodoDto>().ReverseMap();
         }
     }
