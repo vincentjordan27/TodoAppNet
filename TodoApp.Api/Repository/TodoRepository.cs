@@ -30,5 +30,16 @@ namespace TodoApp.Api.Repository
             return await dbContext.Todos.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
         }
 
+        public async Task<Todo> DeleteTodo(Guid id, Guid userId)
+        {
+            var existingTodo = await dbContext.Todos.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            if (existingTodo == null)
+            {
+                return null;
+            }
+            dbContext.Todos.Remove(existingTodo);
+            await dbContext.SaveChangesAsync();
+            return existingTodo;
+        }
     }
 }

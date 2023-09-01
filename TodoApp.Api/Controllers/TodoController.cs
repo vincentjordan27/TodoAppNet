@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TodoApp.Api.Models.Domain;
 using TodoApp.Api.Models.DTO;
@@ -63,6 +62,22 @@ namespace TodoApp.Api.Controllers
             var todoDto = mapper.Map<TodoDto>(todoDomain);
             return Ok(todoDto);
 
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteTodo([FromRoute] Guid id)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty); ;
+            var userId = tokenRepository.GetUserId(token);
+            var userGuid = new Guid(userId);
+            var todoDomain = await todoRepository.DeleteTodo(id, userGuid);
+            if (todoDomain == null)
+            {
+                return NotFound();
+            }
+            var todoDto = mapper.Map<TodoDto>(todoDomain);
+            return Ok(todoDto);
         }
         
     }

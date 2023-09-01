@@ -7,5 +7,6 @@ namespace TodoApp.Api.Repository
         Task<List<Todo>> GetMyTodo(Guid id);
         Task<Todo> InsertTodo(Todo todo);
         Task<Todo> GetTodoById(Guid id, Guid userId);
+        Task<Todo> DeleteTodo(Guid id, Guid userId);
     }
 }
