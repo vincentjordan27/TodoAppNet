@@ -6,6 +6,7 @@ using TodoApp.Api.Data;
 using TodoApp.Api.Repository;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TodoApp.Api.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,12 @@ builder.Services.AddDbContext<TodoAuthDbContext>(options =>
 });
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<ITodoRepository, TodoRepository>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+builder.Services.AddIdentityCore<IdentityUser>()
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("TodoApp")
+    .AddEntityFrameworkStores<TodoAuthDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = false;

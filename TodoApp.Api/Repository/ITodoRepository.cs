@@ -5,5 +5,6 @@ namespace TodoApp.Api.Repository
     public interface ITodoRepository
     {
         Task<List<Todo>> GetMyTodo(Guid id);
+        Task<Todo> InsertTodo(Todo todo);
     }
 }

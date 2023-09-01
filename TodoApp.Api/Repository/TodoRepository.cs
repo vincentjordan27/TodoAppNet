@@ -16,5 +16,13 @@ namespace TodoApp.Api.Repository
         {
             return await dbContext.Todos.Where(x => x.UserId == id).ToListAsync();
         }
+
+        public async Task<Todo> InsertTodo(Todo todo)
+        {
+            todo.CreatedDate = DateTime.Now;
+            await dbContext.Todos.AddAsync(todo);
+            await dbContext.SaveChangesAsync();
+            return todo;
+        }
     }
 }
