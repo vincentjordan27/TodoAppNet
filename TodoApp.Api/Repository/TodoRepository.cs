@@ -24,5 +24,11 @@ namespace TodoApp.Api.Repository
             await dbContext.SaveChangesAsync();
             return todo;
         }
+
+        public async Task<Todo> GetTodoById(Guid id, Guid userId)
+        {
+            return await dbContext.Todos.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+        }
+
     }
 }

@@ -35,6 +35,7 @@ namespace TodoApp.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> InsertTodo([FromBody] AddTodoDTO addTodo)
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty); ;
@@ -44,7 +45,24 @@ namespace TodoApp.Api.Controllers
             todoDomain.UserId = userGuid;
             todoDomain = await todoRepository.InsertTodo(todoDomain);
             var todoDto = mapper.Map<TodoDto>(todoDomain);
+            return CreatedAtAction(nameof(GetTodoById), new { id = todoDto.Id }, todoDto);
+        }
+
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> GetTodoById([FromRoute] Guid id)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty); ;
+            var userId = tokenRepository.GetUserId(token);
+            var userGuid = new Guid(userId);
+            var todoDomain = await todoRepository.GetTodoById(id, userGuid);
+            if (todoDomain == null)
+            {
+                return NotFound();
+            }
+            var todoDto = mapper.Map<TodoDto>(todoDomain);
             return Ok(todoDto);
+
         }
         
     }
