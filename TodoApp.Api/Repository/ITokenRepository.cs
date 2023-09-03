@@ -5,6 +5,6 @@ namespace TodoApp.Api.Repository
     public interface ITokenRepository
     {
         string GetToken(IdentityUser user);
-        string GetUserId(string token);
+        Guid GetUserId(string token);
     }
 }

@@ -28,8 +28,7 @@ namespace TodoApp.Api.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty); ;
             var userId = tokenRepository.GetUserId(token);
-            var userGuid = new Guid(userId);
-            var todo = await todoRepository.GetMyTodo(userGuid);
+            var todo = await todoRepository.GetMyTodo(userId);
             return Ok(mapper.Map<List<TodoDto>>(todo));
         }
 
@@ -39,9 +38,8 @@ namespace TodoApp.Api.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty); ;
             var userId = tokenRepository.GetUserId(token);
-            var userGuid = new Guid(userId);
             var todoDomain = mapper.Map<Todo>(addTodo);
-            todoDomain.UserId = userGuid;
+            todoDomain.UserId = userId;
             todoDomain = await todoRepository.InsertTodo(todoDomain);
             var todoDto = mapper.Map<TodoDto>(todoDomain);
             return CreatedAtAction(nameof(GetTodoById), new { id = todoDto.Id }, todoDto);
@@ -54,8 +52,7 @@ namespace TodoApp.Api.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty); ;
             var userId = tokenRepository.GetUserId(token);
-            var userGuid = new Guid(userId);
-            var todoDomain = await todoRepository.GetTodoById(id, userGuid);
+            var todoDomain = await todoRepository.GetTodoById(id, userId);
             if (todoDomain == null)
             {
                 return NotFound();
@@ -72,9 +69,8 @@ namespace TodoApp.Api.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
             var userId = tokenRepository.GetUserId(token);
-            var userGuid = new Guid(userId);
             var todoDomain = mapper.Map<Todo>(updateTodoDto);
-            todoDomain = await todoRepository.UpdateTodo(id, userGuid, todoDomain);
+            todoDomain = await todoRepository.UpdateTodo(id, userId, todoDomain);
             if (todoDomain == null)
             {
                 return NotFound();
@@ -90,8 +86,7 @@ namespace TodoApp.Api.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty); ;
             var userId = tokenRepository.GetUserId(token);
-            var userGuid = new Guid(userId);
-            var todoDomain = await todoRepository.DeleteTodo(id, userGuid);
+            var todoDomain = await todoRepository.DeleteTodo(id, userId);
             if (todoDomain == null)
             {
                 return NotFound();

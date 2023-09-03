@@ -35,7 +35,7 @@ namespace TodoApp.Api.Repository
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GetUserId(string token)
+        public Guid GetUserId(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
@@ -50,7 +50,8 @@ namespace TodoApp.Api.Repository
 
             var jwtToken = (JwtSecurityToken)validatedToken;
             var userId = jwtToken.Claims.First(x => x.Type == ClaimTypes.UserData).Value;
-            return userId;
+            var userGuid = new Guid(userId);
+            return userGuid;
         }
     }
 }
